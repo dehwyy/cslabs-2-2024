@@ -1,4 +1,4 @@
-TARGET = Project # <- set project name
+TARGET = StaticLibrary
 
 init:
 	mkdir build -p && cd build && cmake ..

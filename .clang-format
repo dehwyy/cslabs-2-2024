@@ -1,3 +1,9 @@
 ﻿---
 BasedOnStyle: Chromium
+PointerAlignment: Left
+SortIncludes: CaseSensitive
+NamespaceIndentation: All
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+IndentWidth: 4
 ...
