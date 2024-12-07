@@ -1,4 +1,4 @@
-TARGET = Project # <- set project name
+TARGET = Planets
 
 init:
 	mkdir build -p && cd build && cmake ..

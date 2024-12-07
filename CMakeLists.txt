@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
+project(Planets) # <- project name
 
-project(Project) # <- project name
 
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 
@@ -25,5 +25,8 @@ add_custom_target(
     ${HEADERS}
 )
 
-# add_subdirectory(path) <- add subdirectory
-# target_link_libraries(${CMAKE_PROJECT_NAME} lib..) <- add libraries
+add_subdirectory(src/planets)
+add_subdirectory(src/db)
+add_subdirectory(src/collections)
+
+target_link_libraries(${CMAKE_PROJECT_NAME} planets db collections)
