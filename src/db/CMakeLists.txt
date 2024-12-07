@@ -5,10 +5,12 @@ project(p)
 
 set(${p}_SOURCES
   db.cpp
+  tables/tables.cpp
 )
 
 set(${p}_HEADERS
   db.h
+  tables/tables.h
 )
 
 add_library(${p} STATIC ${${p}_SOURCES} ${${p}_HEADERS})

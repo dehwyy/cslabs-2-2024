@@ -14,7 +14,7 @@ namespace planets {
             Planet(char* name, int diameter, bool has_life, int satellites);
             ~Planet();
 
-            friend std::ostream& operator<<(std::ostream& s, const Planet* p);
             friend std::istream& operator>>(std::istream& s, Planet*& p);
+            friend std::ostream& operator<<(std::ostream& s, const Planet* p);
     };
 }  // namespace planets

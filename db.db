@@ -1,4 +1,7 @@
-Planets
-[Planets]1;name=Mercury;diameter=4878;has_life=0;satellites=0;
-[Planets]2;name=Venus;diameter=12104;has_life=0;satellites=0;
-[Planets]3;name=Earth;diameter=12774;has_life=1;satellites=1;
+PLANETS
+PLANETS#1;name=Mercury;diameter=4878;has_life=0;satellites=0;
+PLANETS#2;name=Venus;diameter=12104;has_life=0;satellites=0;
+PLANETS#3;name=Earth;diameter=12774;has_life=1;satellites=1;
+
+SHOP
+[SHOP]1;name=daun;
