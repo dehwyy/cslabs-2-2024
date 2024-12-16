@@ -3,27 +3,33 @@
 #include <memory>
 #include "db/db.h"
 #include "db/tables/tables.h"
-#include "planets/planets.h"
 
 int main() {
-    // auto s = db::Db::Open("db.db");
-    // auto planet = new planets::Planet();
-    // while (!s.eof()) {
-    //     s >> planet;
-    //     std::cout << planet;
+    auto db = new db::Database("db.db");
+
+    db->PrintAll();
+    int id = db->InsertOne(std::make_unique<entity::PlanetEntity>(-1, "Psyh", 333, false, 12));
+
+    db->PrintAll();
+
+    db->DeleteOne(table_name::Table::Planets, 1);
+    db->DeleteOne(table_name::Table::Planets, id);
+    db->PrintAll();
+    // db->SortTables();
+    // db->PrintAll();
+
+    db->SyncWithFile();
+
+    // std::fstream f;
+    // db->GetRawReader(f, table_name::Table::Planets);
+
+    // auto planet = new entity::PlanetEntity();
+    // while (planet) {
+    //     f >> planet;
+    //     if (planet) {
+    //         std::cout << planet << std::endl;
+    //     }
     // }
-
-    // delete planet;
-
-    auto d = new db::Db2("db.db");
-    auto planet = std::make_unique<tables::DbTablePlanets>();
-    d->GetOne(*planet);
-
-    auto pl = new planets::Planet(
-        const_cast<char*>(planet->GetPlanetName().data()),
-        planet->GetDiameter(), planet->HasLife(), planet->GetSatellites());
-
-    std::cout << pl << std::endl;
 
     return 0;
 }

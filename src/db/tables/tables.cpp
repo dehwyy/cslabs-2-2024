@@ -1,46 +1,29 @@
 #include "tables.h"
+#include <algorithm>
 #include <iostream>
-#include "../../collections/vec.h"
 
 namespace tables {
-    std::string DbTablePlanets::GetName() {
-        return DbTablePlanetsName;
+    std::vector<std::unique_ptr<entity::Entity>>& DbTable::GetEntities() {
+        return this->entities;
     }
-    void DbTablePlanets::Parse(std::string line) {
-        auto tokens = vec::Vector<std::string>();
-        size_t pos = 0;
-        std::string token = "";
 
-        while ((pos = line.find(FIELD_DELIM)) != std::string::npos) {
-            token = line.substr(0, pos);
-            token = token.substr(token.find(KEY_VALUE_DELIM) + 1);
+    void DbTable::AddEntity(std::unique_ptr<entity::Entity> entity) {
+        this->entities.push_back(std::move(entity));
+    }
 
-            tokens.PushBack(token);
-            line.erase(0, pos + 1);
+    void DbTable::RemoveEntity(int id) {
+        for (size_t i = 0; i < this->entities.size(); i++) {
+            if (this->entities.at(i).get()->GetId() == id) {
+                this->entities.erase(this->entities.begin() + i);
+                return;
+            }
         }
-        if (line.length() > 0) {
-            tokens.PushBack(line);
-        }
-
-        this->name = tokens.Get(1);
-        this->diameter = std::stoi(tokens.Get(2));
-        this->has_life = std::stoi(tokens.Get(3));
-        this->satellites = std::stoi(tokens.Get(4));
     }
 
-    std::string DbTablePlanets::Serialize() {
-        return "";
-    }
-
-    void DbTableShop::Parse(std::string line) {
-        this->address = line;
-    }
-
-    std::string DbTableShop::GetName() {
-        return DbTableShopName;
-    }
-
-    std::string DbTableShop::Serialize() {
-        return "";
+    void DbTable::Sort() {
+        std::sort(this->entities.begin(), this->entities.end(),
+                  [](std::unique_ptr<entity::Entity>& a, std::unique_ptr<entity::Entity>& b) {
+                      return *a.get() < *b.get();
+                  });
     }
 }  // namespace tables

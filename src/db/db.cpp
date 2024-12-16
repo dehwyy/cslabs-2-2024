@@ -1,137 +1,113 @@
 #include "db.h"
+#include <iomanip>
+
+namespace {
+    void Printline(char c, int w) {
+        std::cout << std::setfill(c) << std::setw(w) << " " << std::setfill(' ') << std::endl;
+    }
+}  // namespace
 
 namespace db {
-    std::string Db::ReadOnce(std::istream& s) {
-        if (s.eof()) {
-            return "";
+    void Database::AddToTable(std::unique_ptr<entity::Entity> entity) {
+        auto table_name = entity.get()->GetRelatedTable();
+
+        if (this->tables.find(table_name) == this->tables.end()) {
+            this->tables[table_name] = new tables::DbTable();
         }
 
-        std::string line;
-        std::getline(s, line);
-
-        // if HEADER matches
-        if (line == T_PLANETS) {
-            std::getline(s, line);
-        }
-
-        return line;
+        this->tables[table_name]->AddEntity(std::move(entity));
     }
 
-    SchemaPlanet* Db::ParsePlanet(std::string line) {
-        // If doesn't start with [Planets]
-        if (line.rfind("[" + T_PLANETS + "]", 0) != 0) {
-            return nullptr;
-        }
-
-        line.erase(0, T_PLANETS.size() + 2);
-
-        auto tokens = vec::Vector<std::string>();
-        size_t pos = 0;
-        std::string token = "";
-
-        while ((pos = line.find(DELIM)) != std::string::npos) {
-            token = line.substr(0, pos);
-            token = token.substr(token.find("=") + 1);
-
-            tokens.PushBack(token);
-            line.erase(0, pos + DELIM.length());
-        }
-        if (line.length() > 0) {
-            tokens.PushBack(line);
-        }
-
-        if (tokens.GetSize() != 5) {
-            return nullptr;
-        }
-
-        auto p = new SchemaPlanet();
-
-        p->name = tokens.Get(1);
-        p->diameter = std::stoi(tokens.Get(2));
-        p->has_life = std::stoi(tokens.Get(3));
-        p->satellites = std::stoi(tokens.Get(4));
-
-        return p;
-    }
-
-    SchemaPlanet* Db::GetPlanetOnce(std::istream& s) {
-        std::string line = Db::ReadOnce(s);
-        return Db::ParsePlanet(line);
-    }
-
-    std::ifstream Db::Open(std::string filepath) {
-        std::ifstream f(filepath.c_str(),
-                        std::ios::binary | std::ios::in | std::ios::out);
-
-        return f;
-    }
-
-    void Db2::InitDbIndexes() {
-        std::string s = "";
-        while (!this->index_file_handle.eof()) {
-            std::getline(this->index_file_handle, s);
-
-            auto kv = key_value::KeyValue(s, this->KEY_VALUE_DELIM);
-
-            bool matches = false;
-            if (kv.GetKey() == tables::DbTablePlanetsName ||
-                kv.GetKey() == tables::DbTableShopName) {
-                matches = true;
-            }
-
-            if (matches) {
-                this->tables[kv.GetKey()] = std::stoi(kv.GetValue());
-            }
-        }
-
-        this->index_file_handle.clear();
-        this->index_file_handle.seekg(0, std::ios::beg);
-    }
-
-    void Db2::RemovePrefix(std::string& line) {
-        line = line.substr(line.find(this->PREFIX_DELIM) + 1);
-    }
-
-    Db2::Db2(std::string filepath) {
-        auto flags = std::ios::binary | std::ios::in | std::ios::out;
-
+    Database::Database(std::string filepath) {
         this->filepath = filepath;
-        this->file_handle.open(this->filepath.c_str(), flags);
-        this->index_file_handle.open(this->INDEX_FILEPATH, flags);
 
-        if (!this->file_handle.is_open()) {
-            std::cerr << "Error opening db file." << std::endl;
-        }
-
-        if (!this->index_file_handle.is_open()) {
-            std::cerr << "Error opening an index file." << std::endl;
-        } else {
-            this->InitDbIndexes();
-        }
+        this->SyncWithFile();
     }
 
-    Db2::~Db2() {
-        this->file_handle.close();
-        this->index_file_handle.close();
-    }
+    void Database::SyncWithFile() {
+        // Empty -> read from file and store to structure
+        if (tables.empty()) {
+            std::fstream f(this->filepath.c_str(), std::ios::binary | std::ios::in | std::ios::out);
 
-    void Db2::GetOne(tables::DbTable& table) {
-        std::string line = "";
-        for (unsigned i = 0; i < this->tables[table.GetName()]; i++) {
-            std::getline(this->file_handle, line);
-        }
+            std::string line = "";
+            while (!f.eof()) {
+                std::getline(f, line);
+                std::unique_ptr<entity::Entity> entity = serde::Deserializer::FromString(line);
 
-        if (this->file_handle.eof()) {
+                if (!entity) {
+                    entity.release();
+                    continue;
+                }
+
+                this->AddToTable(std::move(entity));
+            }
+
+            f.close();
             return;
         }
 
-        std::getline(this->file_handle, line);
-        this->RemovePrefix(line);
+        // Otherwise -> write to file
+        std::ofstream f(this->filepath.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
+        for (auto kv : this->tables) {
+            auto table = kv.second;
 
-        table.Parse(line);
+            f << table_name::TableToString(kv.first) << std::endl;
+            for (auto& entity : table->GetEntities()) {
+                f << serde::Serializer::Serialize(*entity) << std::endl;
+            }
+        }
 
-        this->file_handle.clear();
-        this->file_handle.seekg(0, std::ios::beg);
+        f.close();
     }
 
+    void Database::SortTables() {
+        for (auto kv : this->tables) {
+            kv.second->Sort();
+        }
+    }
+
+    int Database::InsertOne(std::unique_ptr<entity::Entity> entity) {
+        int id = entity->GetId();
+        this->AddToTable(std::move(entity));
+
+        return id;
+    }
+
+    void Database::DeleteOne(table_name::Table table, int id) {
+        this->tables[table]->RemoveEntity(id);
+    }
+
+    void Database::PrintTable(table_name::Table table_name) {
+        auto table = this->tables[table_name];
+
+        std::cout << "Table: " << table_name::TableToString(table_name) << std::endl;
+
+        for (auto& entity : table->GetEntities()) {
+            std::cout << serde::Serializer::Pretty(*entity) << std::endl;
+        }
+    }
+
+    void Database::PrintAll() {
+        Printline('-', 100);
+        for (auto kv : this->tables) {
+            std::cout << std::endl;
+            this->PrintTable(kv.first);
+        }
+        std::cout << std::endl;
+        Printline('-', 100);
+    }
+
+    void Database::GetRawReader(std::fstream& f, table_name::Table table_name) {
+        f.open(this->filepath.c_str(), std::ios::binary | std::ios::in | std::ios::out);
+
+        f.seekg(0, std::ios::beg);
+
+        std::string line = "";
+        while (!f.eof()) {
+            std::getline(f, line);
+            if (line == table_name::TableToString(table_name)) {
+                break;
+            }
+        }
+    }
 }  // namespace db

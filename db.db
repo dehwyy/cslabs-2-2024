@@ -1,7 +1,7 @@
 PLANETS
-PLANETS#1;name=Mercury;diameter=4878;has_life=0;satellites=0;
-PLANETS#2;name=Venus;diameter=12104;has_life=0;satellites=0;
-PLANETS#3;name=Earth;diameter=12774;has_life=1;satellites=1;
-
-SHOP
-[SHOP]1;name=daun;
+PLANETS#id=2;name=Venus;diameter=12104;has_life=0;satellites=0;
+PLANETS#id=3;name=Moscka;diameter=12104;has_life=0;satellites=0;
+PLANETS#id=7;name=Daun;diameter=727;has_life=1;satellites=2;
+SHOPS
+SHOPS#id=1;name=Ashan;address=daun;owner=dehwyy;employees=70;revenue_per_month=300;
+SHOPS#id=3;name=Dicksy;address=bmsty;owner=dehwyy;employees=170;revenue_per_month=1000;
