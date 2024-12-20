@@ -3,7 +3,10 @@ BasedOnStyle: Chromium
 PointerAlignment: Left
 SortIncludes: CaseSensitive
 NamespaceIndentation: All
+IndentAccessModifiers: true
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
 IndentWidth: 4
+ColumnLimit: 105
+BinPackArguments: false
 ...
