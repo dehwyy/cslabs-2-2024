@@ -29,15 +29,20 @@ namespace serde {
         }
 
         if (table == table_name::Table::Planets) {
-            return std::make_unique<entity::PlanetEntity>(
-                std::stoi(tokens.at(0)), tokens.at(1), std::stoi(tokens.at(2)), std::stoi(tokens.at(3)),
-                std::stoi(tokens.at(4)));
+            return std::make_unique<entity::PlanetEntity>(std::stoi(tokens.at(0)),
+                                                          tokens.at(1),
+                                                          std::stoi(tokens.at(2)),
+                                                          std::stoi(tokens.at(3)),
+                                                          std::stoi(tokens.at(4)));
         }
 
         if (table == table_name::Table::Shops) {
-            return std::make_unique<entity::ShopEntity>(
-                std::stoi(tokens.at(0)), tokens.at(1), tokens.at(2), tokens.at(3),
-                std::stoi(tokens.at(4)), std::stoi(tokens.at(5)));
+            return std::make_unique<entity::ShopEntity>(std::stoi(tokens.at(0)),
+                                                        tokens.at(1),
+                                                        tokens.at(2),
+                                                        tokens.at(3),
+                                                        std::stoi(tokens.at(4)),
+                                                        std::stoi(tokens.at(5)));
         }
 
         return nullptr;

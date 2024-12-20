@@ -21,7 +21,8 @@ namespace tables {
     }
 
     void DbTable::Sort() {
-        std::sort(this->entities.begin(), this->entities.end(),
+        std::sort(this->entities.begin(),
+                  this->entities.end(),
                   [](std::unique_ptr<entity::Entity>& a, std::unique_ptr<entity::Entity>& b) {
                       return *a.get() < *b.get();
                   });

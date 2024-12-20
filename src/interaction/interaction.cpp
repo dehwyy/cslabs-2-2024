@@ -66,8 +66,8 @@ namespace interaction {
         std::cout << "Выручка в месяц: ";
         std::cin >> revenue_per_month;
 
-        return std::make_unique<entity::ShopEntity>(id, name, address, owner, employees,
-                                                    revenue_per_month);
+        return std::make_unique<entity::ShopEntity>(
+            id, name, address, owner, employees, revenue_per_month);
     }
 
     DatabaseInteractionType ReadDatabaseInteractionType() {
