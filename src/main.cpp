@@ -1,20 +1,11 @@
 #include <iostream>
 #include "app/app.hpp"
-#include "collections/stack/stack.hpp"
 
 int main() {
-    int number = 0;
-    std::cout << "Введите число(int): ";
-    std::cin >> number;
+    std::cout << "Множество из целых чисел: " << std::endl;
+    app::RunIntTask();
 
-    stack::Stack<int> stack;
-    app::FactorizeNumber(number, stack);
-
-    std::cout << number << "=";
-    app::PrintIntStack(stack);
-    stack.reverse();
-
-    std::cout << number << "=";
-    app::PrintIntStack(stack);
+    std::cout << "Множество из строк: " << std::endl;
+    app::RunCStringTask();
     return 0;
 }

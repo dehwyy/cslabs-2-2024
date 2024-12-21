@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(p "stack")
+set(p "collections")
 project(p)
 
 set(${p}_SOURCES
 )
 
 set(${p}_HEADERS
-  stack.hpp
+  vector.hpp
+  set.hpp
 )
 
 add_library(${p} STATIC ${${p}_SOURCES} ${${p}_HEADERS})

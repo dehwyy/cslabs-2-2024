@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(StackImpl)
+project(SetImpl)
 
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 
@@ -21,6 +21,6 @@ add_custom_target(
     ${HEADERS}
 )
 
-add_subdirectory(src/collections/stack)
+add_subdirectory(src/collections)
 add_subdirectory(src/app)
-target_link_libraries(${CMAKE_PROJECT_NAME} stack app)
+target_link_libraries(${CMAKE_PROJECT_NAME} collections app)

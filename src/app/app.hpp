@@ -1,8 +1,10 @@
 #pragma once
-#include "../collections/stack/stack.hpp"
+#include <iostream>
+#include "../collections/set.hpp"
 
 namespace app {
-    void FactorizeNumber(int number, stack::Stack<int>& stack);
+    void RunIntTask();
 
-    void PrintIntStack(stack::Stack<int> stack);
+    void RunCStringTask();
+
 }  // namespace app
