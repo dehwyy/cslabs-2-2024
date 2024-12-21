@@ -1,16 +1,12 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(Project) # <- project name
+project(StackImpl)
 
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 
 set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 )
-set(HEADERS
-    # ${CMAKE_CURRENT_SOURCE_DIR}/src/app.h # <- add project .h files
-)
-
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS})
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 20)
@@ -25,5 +21,6 @@ add_custom_target(
     ${HEADERS}
 )
 
-# add_subdirectory(path) <- add subdirectory
-# target_link_libraries(${CMAKE_PROJECT_NAME} lib..) <- add libraries
+add_subdirectory(src/collections/stack)
+add_subdirectory(src/app)
+target_link_libraries(${CMAKE_PROJECT_NAME} stack app)
