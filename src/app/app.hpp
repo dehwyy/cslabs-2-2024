@@ -4,7 +4,6 @@
 
 namespace app {
     void RunIntTask();
-
     void RunCStringTask();
 
 }  // namespace app

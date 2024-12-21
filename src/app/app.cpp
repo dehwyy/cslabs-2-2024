@@ -37,8 +37,7 @@ namespace app {
         std::cout << "Есть ли в множестве `6`?: " << (set.has(6) ? "Да" : "Нет") << std::endl
                   << std::endl;
 
-        std::cout << "Введите множество (Ctrl+D для завершения ввода): " << std::endl;
-
+        std::cout << "Введите целые числа через пробел: ";
         set::Set<int> newSet;
         std::cin >> newSet;
 
@@ -64,8 +63,7 @@ namespace app {
         std::cout << "Есть ли в множестве `!`?: " << (set.has((char*)"!") ? "Да" : "Нет") << std::endl
                   << std::endl;
 
-        std::cout << "Введите слова через пробел: " << std::endl;
-
+        std::cout << "Введите слова через пробел: ";
         set::Set<char*> newSet;
         std::cin >> newSet;
 

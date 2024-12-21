@@ -1,9 +1,23 @@
+#pragma once
+#pragma GCC diagnostic ignored "-Wunused-function"
 #include <cstring>
 #include <functional>
 #include <memory>
 #include "vector.hpp"
 
 namespace {
+    const unsigned BUF_SIZE = 1024;
+
+    template <typename T>
+    T transform(char* token) {
+        return T(token);
+    }
+
+    template <>
+    int transform(char* token) {
+        return std::atoi(token);
+    }
+
     template <typename T>
     int compare(const T& left, const T& right) {
         return left - right;
@@ -15,9 +29,6 @@ namespace {
     }
 
     template <typename T>
-    using CompareCallback = std::function<int(const T&, const T&)>;
-
-    template <typename T>
     void quick_sort(T* data, int left, int right) {
         if (left >= right) {
             return;
@@ -26,9 +37,9 @@ namespace {
         T pivot = data[right];
         int i = left - 1;
 
-        // Разделение массива
+        // Array partition.
         for (int j = left; j < right; ++j) {
-            // if (data[j] < pivot)
+            // Similar to `if (data[j] < pivot)`.
             if (compare(data[j], pivot) < 0) {
                 ++i;
                 std::swap(data[i], data[j]);
@@ -41,7 +52,7 @@ namespace {
         quick_sort(data, i + 2, right);
     }
 
-    // Assume, that data is already sorted
+    // Assume, that data is already sorted.
     template <typename T>
     int binary_search(T* data, int left, int right, T value) {
         if (left > right) {
@@ -49,13 +60,19 @@ namespace {
         }
 
         int mid = (left + right) / 2;
+
+        // If matches.
         if (compare(data[mid], value) == 0) {
             return mid;
-        } else if (compare(data[mid], value) < 0) {
-            return binary_search(data, mid + 1, right, value);
-        } else {
-            return binary_search(data, left, mid - 1, value);
         }
+
+        // Left side.
+        if (compare(data[mid], value) < 0) {
+            return binary_search(data, mid + 1, right, value);
+        }
+
+        // Right side.
+        return binary_search(data, left, mid - 1, value);
     }
 }  // namespace
 
@@ -65,7 +82,7 @@ namespace set {
         private:
             void q_sort() { quick_sort(this->data, 0, this->size - 1); }
             int q_find(T value) const { return binary_search(this->data, 0, this->size - 1, value); }
-            // no sort, returns whether element was added
+            // Doesn't sort after adding. Returns whether element was added.
             bool q_add(T value) {
                 if (this->has(value)) {
                     return false;
@@ -79,6 +96,7 @@ namespace set {
 
         public:
             bool has(T value) const { return this->q_find(value) != -1; }
+
             void add(T value) {
                 if (this->q_add(value)) {
                     this->q_sort();
@@ -166,27 +184,17 @@ namespace set {
 
     template <typename Friend>
     inline std::istream& operator>>(std::istream& is, Set<Friend>& set) {
-        Friend value;
-        while (is >> value) {
-            set.add(value);
-        }
-        return is;
-    }
-
-    template <>
-    inline std::istream& operator>>(std::istream& is, Set<char*>& set) {
-        auto buffer = new char[1024];
-        is.getline(buffer, 1024);
-
-        set.add(buffer);
+        auto buffer = new char[BUF_SIZE];
+        is.getline(buffer, BUF_SIZE);
 
         char* token = std::strtok(buffer, " ");
 
         while (token != nullptr) {
-            set.add(token);
+            set.add(transform<Friend>(token));
             token = std::strtok(nullptr, " ");
         }
 
         return is;
     }
+
 }  // namespace set
