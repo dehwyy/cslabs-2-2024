@@ -1,12 +1,10 @@
 #include <iostream>
 #include "app/app.hpp"
+#include "polynomial/polynomial.hpp"
 
 int main() {
-    std::cout << "Множество из целых чисел: " << std::endl;
-    app::RunIntTask();
-
-    std::cout << "Множество из строк: " << std::endl;
-    app::RunCStringTask();
-
+    app::RunExample();
+    std::cout << std::endl;
+    app::RunTermExample();
     return 0;
 }

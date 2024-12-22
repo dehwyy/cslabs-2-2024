@@ -1,4 +1,4 @@
-TARGET = SetImpl
+TARGET = Polynomial
 
 init:
 	mkdir build -p && cd build && cmake ..

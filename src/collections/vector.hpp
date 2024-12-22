@@ -1,39 +1,72 @@
+#pragma once
+
 namespace {
     unsigned DEFAULT_CAPACITY = 16;
     unsigned GROWTH_FACTOR = 2;
-    unsigned SHRINK_FACTOR = 4;
+
+    template <typename T>
+    void quick_sort(T* data, int left, int right, bool ascending) {
+        if (left >= right) {
+            return;
+        }
+
+        T pivot = data[right];
+        int i = left - 1;
+
+        // Array partition.
+        for (int j = left; j < right; ++j) {
+            if (ascending ? (data[j] < pivot) : !(data[j] < pivot)) {
+                ++i;
+                std::swap(data[i], data[j]);
+            }
+        }
+
+        std::swap(data[i + 1], data[right]);
+
+        quick_sort(data, left, i, ascending);
+        quick_sort(data, i + 2, right, ascending);
+    }
+
+    // Assume, that data is already sorted.
+    template <typename T>
+    int _binary_search(T* data, int left, int right, T value, bool ascending) {
+        if (left > right) {
+            return -1;
+        }
+
+        int mid = (left + right) / 2;
+
+        // If matches.
+        if (data[mid] == value) {
+            return mid;
+        }
+
+        // Left side.
+        if (ascending ? (data[mid] < value) : !(data[mid] < value)) {
+            return _binary_search(data, mid + 1, right, value, ascending);
+        }
+
+        // Right side.
+        return _binary_search(data, left, mid - 1, value, ascending);
+    }
 }  // namespace
 
 namespace vector {
     template <typename T>
     class Vec {
         protected:
-            unsigned size = 0;
+            unsigned _size = 0;
             unsigned capacity = 0;
             T* data = nullptr;
 
-            void resize_grow_if_needed() {
-                if (this->size < this->capacity) {
+            void resize() {
+                if (this->_size < this->capacity) {
                     return;
                 }
 
                 this->capacity *= GROWTH_FACTOR;
                 T* new_data = new T[this->capacity];
-                for (unsigned i = 0; i < this->size; ++i) {
-                    new_data[i] = this->data[i];
-                }
-                delete[] this->data;
-                this->data = new_data;
-            }
-
-            void resize_shrink_if_needed() {
-                if (this->size >= this->capacity / SHRINK_FACTOR) {
-                    return;
-                }
-
-                this->capacity /= GROWTH_FACTOR;
-                T* new_data = new T[this->capacity];
-                for (unsigned i = 0; i < this->size; ++i) {
+                for (unsigned i = 0; i < this->_size; ++i) {
                     new_data[i] = this->data[i];
                 }
                 delete[] this->data;
@@ -46,44 +79,50 @@ namespace vector {
                 this->capacity = DEFAULT_CAPACITY;
             }
             Vec(const Vec& vector) {
-                this->size = vector.size;
+                this->_size = vector.size();
                 this->capacity = vector.capacity;
                 this->data = new T[this->capacity];
 
-                for (unsigned i = 0; i < this->size; ++i) {
+                for (unsigned i = 0; i < this->_size; ++i) {
                     this->data[i] = vector.data[i];
                 }
             }
+            Vec& operator=(const Vec& other) {
+                delete[] this->data;
+                this->_size = other.size();
+                this->data = new T[this->_size];
+                std::copy(other.data, other.data + this->_size, this->data);
+                return *this;
+            }
             ~Vec() { delete[] this->data; }
 
-            void add(T value) {
-                this->resize_grow_if_needed();
-                this->data[this->size++] = value;
+            void push_back(T value) {
+                this->resize();
+                this->data[this->_size++] = value;
+            }
+
+            void remove(int index) {
+                for (unsigned i = index; i < this->_size - 1; ++i) {
+                    this->data[i] = this->data[i + 1];
+                }
+                this->_size--;
             }
 
             void remove(T value) {
-                for (unsigned i = 0; i < this->size; ++i) {
+                for (unsigned i = 0; i < this->_size; ++i) {
                     if (this->data[i] == value) {
-                        this->data[i] = this->data[this->size - 1];
-                        this->size--;
+                        this->remove(i);
                         break;
                     }
                 }
-
-                this->resize_shrink_if_needed();
             }
-
-            int find(T value) {
-                for (unsigned i = 0; i < this->size; ++i) {
-                    if (this->data[i] == value) {
-                        return i;
-                    }
-                }
-                return -1;
+            int binary_search(T value, bool ascending = true) const {
+                return _binary_search(this->data, 0, this->_size - 1, value, ascending);
             }
+            void sort(bool ascending = true) { quick_sort(this->data, 0, this->_size - 1, ascending); }
 
-            int get_size() const { return this->size; }
+            int size() const { return this->_size; }
 
-            T& operator[](int index) { return this->data[index]; }
+            T& operator[](int index) const { return this->data[index]; }
     };
 }  // namespace vector

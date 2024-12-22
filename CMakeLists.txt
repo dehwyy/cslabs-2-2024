@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(SetImpl)
+project(Polynomial)
 
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 
@@ -23,4 +23,5 @@ add_custom_target(
 
 add_subdirectory(src/collections)
 add_subdirectory(src/app)
-target_link_libraries(${CMAKE_PROJECT_NAME} collections app)
+add_subdirectory(src/polynomial)
+target_link_libraries(${CMAKE_PROJECT_NAME} collections app polynomial)

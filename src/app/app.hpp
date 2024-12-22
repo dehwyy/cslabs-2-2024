@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
-#include "../collections/set.hpp"
+#include "../polynomial/polynomial.hpp"
 
 namespace app {
-    void RunIntTask();
-    void RunCStringTask();
+    void RunExample();
 
+    void RunTermExample();
 }  // namespace app
