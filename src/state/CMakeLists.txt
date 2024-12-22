@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(p "polynomial")
+set(p "state")
 project(p)
 
 set(${p}_SOURCES
-  polynomial.cpp
+  state.cpp
 )
 
 set(${p}_HEADERS
-  polynomial.hpp
+  state.hpp
 )
 
 add_library(${p} STATIC ${${p}_SOURCES} ${${p}_HEADERS})

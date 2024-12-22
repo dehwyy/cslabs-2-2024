@@ -1,10 +1,8 @@
 #include <iostream>
 #include "app/app.hpp"
-#include "polynomial/polynomial.hpp"
 
 int main() {
-    app::RunExample();
-    std::cout << std::endl;
-    app::RunTermExample();
+    app::RunDemo();
+    app::RunInteractive();
     return 0;
 }

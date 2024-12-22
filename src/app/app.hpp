@@ -1,9 +1,7 @@
 #pragma once
 #include <iostream>
-#include "../polynomial/polynomial.hpp"
 
 namespace app {
-    void RunExample();
-
-    void RunTermExample();
+    void RunDemo();
+    void RunInteractive();
 }  // namespace app

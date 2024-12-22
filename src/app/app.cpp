@@ -1,38 +1,30 @@
 #include "app.hpp"
 #include <iostream>
+#include "../collections/vector.hpp"
+#include "../state/state.hpp"
 
 namespace app {
-    void RunExample() {
-        polynomial::Polynomial p = {};
-        std::cout << "Введите полином: ";
-        std::cin >> p;
-        std::cout << "Введенный полином: " << p << std::endl;
+    void RunDemo() {
+        vector::Vec<state::State*> states = {};
+        states.push_back(
+            new state::Republic((char*)"Россия", 143000000, 446000, (char*)"Владимир Путин", 4));
 
-        polynomial::Polynomial p2 = {};
-        std::cout << "Введите второй полином: ";
-        std::cin >> p2;
-        std::cout << "Введенный второй полином: " << p2 << std::endl;
+        states.push_back(new state::Monarchy((char*)"Казахстан",
+                                             18000000,
+                                             466000,
+                                             (char*)"Нурсултан Назарбаев",
+                                             (char*)"Казахстанская монархия"));
 
-        std::cout << "Сумма полиномов: " << p + p2 << std::endl;
+        states.push_back(new state::Kingdom(
+            (char*)"Турция", 80000000, 780000, (char*)"Эрдоган", (char*)"Королевство", (char*)"Ислам"));
 
-        std::cout << "Произведение полиномов: " << p * p2 << std::endl;
+        states.push_back(new state::Republic(
+            (char*)"Индия", 1300000000, 3280000, (char*)"Народная республика Индия", 4));
+
+        for (int i = 0; i < states.size(); i++) {
+            states[i]->show();
+        }
     }
 
-    void RunTermExample() {
-        using namespace polynomial;
-
-        term::Term t = {};
-        std::cout << "Введите терм: ";
-        std::cin >> t;
-        std::cout << "Введенный терм: " << t << std::endl;
-
-        term::Term t2 = {};
-        std::cout << "Введите второй терм той же степени: ";
-        std::cin >> t2;
-        std::cout << "Введенный второй терм: " << t2 << std::endl;
-
-        std::cout << "Сумма термов: " << t + t2 << std::endl;
-
-        std::cout << "Произведение термов: " << t * t2 << std::endl;
-    }
+    void RunInteractive() {}
 }  // namespace app
