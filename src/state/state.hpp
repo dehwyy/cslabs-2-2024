@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 namespace state {
     class State {
@@ -14,6 +15,8 @@ namespace state {
 
             double calculateDensity() const;
             virtual void show() const = 0;
+
+            friend std::ostream& operator<<(std::ostream& os, const State* state);
     };
 
     class Republic : public State {

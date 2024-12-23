@@ -48,7 +48,13 @@ namespace vector {
                 std::copy(other.data, other.data + this->_size, this->data);
                 return *this;
             }
-            ~Vec() { delete[] this->data; }
+            ~Vec() {
+                if (this->data) {
+                    for (unsigned i = 0; i < this->_size; ++i) {
+                        delete this->data[i];
+                    }
+                }
+            }
 
             void push_back(T value) {
                 this->resize();
@@ -56,23 +62,22 @@ namespace vector {
             }
 
             void remove(int index) {
-                for (auto i = index; i < this->_size - 1; ++i) {
+                for (unsigned i = index; i < this->_size - 1; ++i) {
                     this->data[i] = this->data[i + 1];
                 }
                 this->_size--;
             }
 
             void clear() {
+                this->~Vec();
                 this->_size = 0;
                 this->capacity = DEFAULT_CAPACITY;
-                delete[] this->data;
             }
 
             void print() const {
-                for (auto i = 0; i < this->_size; ++i) {
-                    std::cout << this->data[i] << " ";
+                for (unsigned i = 0; i < this->_size; ++i) {
+                    std::cout << this->data[i] << std::endl;
                 }
-                std::cout << std::endl;
             }
 
             int size() const { return this->_size; }
